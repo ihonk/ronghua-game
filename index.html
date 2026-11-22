@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#141328">
+    <link rel="icon" href="data:,">
+    <title>融画 · 贝壳浅滩</title>
+  </head>
+  <body>
+    <main id="playfield" class="playfield">
+      <header class="topbar">
+        <button id="levels" class="icon-button" type="button" aria-label="返回关卡选择">
+          <span class="back-icon" aria-hidden="true"></span>
+        </button>
+        <div class="level-heading">
+          <p id="level-no">融画 · 第 1 关</p>
+          <h1 id="stage-title">贝壳浅滩</h1>
+        </div>
+        <button id="settings" class="icon-button" type="button" aria-label="设置">
+          <span class="gear-icon" aria-hidden="true">⚙</span>
+        </button>
+      </header>
+
+      <section id="game-table" class="table" aria-label="贝壳浅滩游戏区">
+        <div class="table-hud">
+          <span class="tide-track" id="tide-track" role="progressbar" aria-label="材料余量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+            <span></span>
+          </span>
+          <span id="remaining" aria-hidden="true">100%</span>
+        </div>
+
+        <div class="scene" id="scene">
+          <div class="well">
+            <div class="surface" id="surface" aria-hidden="true"></div>
+          </div>
+          <div class="view" id="view" aria-hidden="true"></div>
+          <div class="dock" id="dock" aria-label="五个接料槽"></div>
+        </div>
+
+        <div class="tray" aria-label="待用杯">
+          <p class="hint" id="hint" aria-live="polite">点亮起的杯子。</p>
+          <div id="queues" class="queues"></div>
+        </div>
+
+        <div class="result" id="result" hidden>
+          <div class="result-inner" role="status">
+            <div id="result-mark" aria-hidden="true"></div>
+            <h2 id="result-title"></h2>
+            <p id="result-detail"></p>
+            <p id="run-stats" class="run-stats"></p>
+            <button id="next" class="action" type="button" hidden>下一关</button>
+            <button id="again" class="action" type="button">再玩一次</button>
+          </div>
+        </div>
+      </section>
+
+      <dialog id="settings-panel" class="panel" aria-labelledby="settings-title">
+        <h2 id="settings-title">设置</h2>
+        <button id="quality" class="option" type="button" aria-pressed="false">
+          <span>省电模式</span><span class="switch" aria-hidden="true"></span>
+        </button>
+        <button id="restart" class="option" type="button">重开本关</button>
+        <button id="export-stats" class="option" type="button">导出试玩记录</button>
+        <p id="storage-note" hidden>此浏览器暂时无法保存进度。</p>
+        <form method="dialog"><button class="action" type="submit">继续游戏</button></form>
+      </dialog>
+
+      <dialog id="stats-panel" class="panel" aria-labelledby="stats-title">
+        <h2 id="stats-title">试玩记录</h2>
+        <textarea id="stats-data" aria-label="试玩记录 JSON" readonly></textarea>
+        <a id="stats-download" class="action" download="融画-试玩记录.json">保存 JSON</a>
+        <form method="dialog"><button class="option" type="submit">返回设置</button></form>
+      </dialog>
+
+      <dialog id="level-panel" class="panel" aria-labelledby="levels-title">
+        <h2 id="levels-title">融画</h2>
+        <div id="level-choices"></div>
+        <form method="dialog"><button class="action" type="submit">返回游戏</button></form>
+      </dialog>
+    </main>
+    <script type="module" src="./src/entry.ts"></script>
+  </body>
+</html>
