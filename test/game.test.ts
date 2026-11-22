@@ -1,14 +1,10 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { Game, playReplay, RULES_VERSION, TIMING } from '../src/game.ts'
 import { parseLevel } from '../src/level.ts'
 import { tutorial } from '../src/tutorial.ts'
 import type { Event } from '../src/game.ts'
 
-const readData = (name: string) => JSON.parse(readFileSync(new URL(`../../04_data/${name}.json`, import.meta.url), 'utf8'))
-const example = readData('example-level')
-const observed = readData('level-1-reconstruction')
 const paletteFor = (colors: string[]) => Object.fromEntries(colors.map(color => [color, { hex: '#9988ff', name: color, mark: '●' }]))
 
 function fixture(board: string[], queues: { color: string; capacity?: number }[][], slotCount = 5) {
@@ -171,22 +167,27 @@ test('v4两侧材料滑入中间缺口并按原色入杯，旧回放可以重复
 })
 
 test('研究关的奶白杯只在同色材料露出后开始接料', () => {
-  const level = fixture(observed.boardBottomToTop,
-    observed.cupQueuesFrontToBack.map((queue: string[]) => queue.map(color => ({ color }))))
+  const board = ['rose', 'purple', 'orange', 'blue', 'cream', 'green']
+  const queues = [['rose', 'cream', 'orange'], ['purple', 'blue', 'green']]
+  const solution = [0, 1, 0, 0, 1, 1]
+  const level = fixture(board, queues.map(queue => queue.map(color => ({ color }))))
   const game = new Game(level)
-  observed.exampleSolutionQueueIndices.slice(0, 3).forEach((index: number) => play(game, index))
+  solution.slice(0, 3).forEach(index => play(game, index))
   assert.equal(game.slots.find(cup => cup?.color === 'cream')?.filled, 0)
-  observed.exampleSolutionQueueIndices.slice(3).forEach((index: number) => play(game, index))
+  solution.slice(3).forEach(index => play(game, index))
   assert.equal(game.outcome, 'won')
 })
 
 test('二槽原创示例能验证死局并能在新局走通', () => {
-  const level = fixture(example.pictureColumnsBottomToTop[0], example.cupQueuesFrontToBack, 2)
+  const level = fixture(['R', 'G', 'B', 'B'], [
+    [{ color: 'B' }, { color: 'R' }],
+    [{ color: 'G' }, { color: 'B' }],
+  ], 2)
   const blocked = new Game(level)
-  example.deadlockQueueIndices.forEach((index: number) => play(blocked, index))
+  for (const index of [1, 0]) play(blocked, index)
   assert.equal(blocked.outcome, 'stuck')
   const fresh = new Game(level)
-  example.solutionQueueIndices.forEach((index: number) => play(fresh, index))
+  for (const index of [0, 0, 1, 1]) play(fresh, index)
   assert.equal(fresh.outcome, 'won')
 })
 
